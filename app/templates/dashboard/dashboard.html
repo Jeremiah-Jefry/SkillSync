@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - SkillSync{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Dashboard Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-poppins font-bold text-gray-900">
+                    Welcome back, {{ current_user.first_name }}!
+                </h1>
+                <p class="text-gray-600 mt-1">Track your skills and showcase your projects</p>
+            </div>
+            <div class="flex space-x-4">
+                <a href="{{ url_for('dashboard.add_skill') }}" 
+                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                    <i class="fas fa-plus mr-2"></i>Add Skill
+                </a>
+                <a href="{{ url_for('dashboard.add_project') }}" 
+                   class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition duration-200">
+                    <i class="fas fa-plus mr-2"></i>Add Project
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 mr-4">
+                    <i class="fas fa-brain text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Total Skills</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ skills_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 mr-4">
+                    <i class="fas fa-project-diagram text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Projects</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ projects_count }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 mr-4">
+                    <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Avg. Skill Level</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ "%.1f"|format(avg_skill_level) }}/10</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Skills by Category</h3>
+            <canvas id="skillsCategoryChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Skill Level Distribution</h3>
+            <canvas id="skillsLevelChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Skills -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Skills</h3>
+                <a href="{{ url_for('dashboard.skills') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    View all
+                </a>
+            </div>
+            {% if recent_skills %}
+                <div class="space-y-3">
+                    {% for skill in recent_skills %}
+                        <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ skill.name }}</p>
+                                <p class="text-sm text-gray-600">{{ skill.category }}</p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-20 bg-gray-200 rounded-full h-2 mr-3">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: {{ skill.level * 10 }}%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-gray-700">{{ skill.level }}/10</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-brain text-gray-300 text-4xl mb-4"></i>
+                    <p class="text-gray-500">No skills added yet</p>
+                    <a href="{{ url_for('dashboard.add_skill') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        Add your first skill
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent Projects -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Recent Projects</h3>
+                <a href="{{ url_for('dashboard.projects') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    View all
+                </a>
+            </div>
+            {% if recent_projects %}
+                <div class="space-y-3">
+                    {% for project in recent_projects %}
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium text-gray-900">{{ project.title }}</h4>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                    {{ 'bg-green-100 text-green-800' if project.status == 'completed' 
+                                       else 'bg-yellow-100 text-yellow-800' if project.status == 'in-progress' 
+                                       else 'bg-gray-100 text-gray-800' }}">
+                                    {{ project.status|title }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-2">{{ project.description[:100] }}...</p>
+                            {% if project.tech_stack %}
+                                <div class="flex flex-wrap gap-1">
+                                    {% for tech in project.get_tech_stack_list()[:3] %}
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{{ tech }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-project-diagram text-gray-300 text-4xl mb-4"></i>
+                    <p class="text-gray-500">No projects added yet</p>
+                    <a href="{{ url_for('dashboard.add_project') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                        Add your first project
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load skills data and create charts
+fetch('{{ url_for("dashboard.skills_data") }}')
+    .then(response => response.json())
+    .then(data => {
+        // Skills by Category Chart
+        const categoryCtx = document.getElementById('skillsCategoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(data.categories),
+                datasets: [{
+                    data: Object.values(data.categories),
+                    backgroundColor: [
+                        '#2563EB', '#7C3AED', '#059669', '#DC2626', '#EA580C',
+                        '#CA8A04', '#4338CA', '#BE185D'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Skills Level Distribution Chart
+        const levelCtx = document.getElementById('skillsLevelChart').getContext('2d');
+        new Chart(levelCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(data.levels).map(level => `Level ${level}`),
+                datasets: [{
+                    label: 'Number of Skills',
+                    data: Object.values(data.levels),
+                    backgroundColor: '#2563EB'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error loading skills data:', error);
+    });
+</script>
+{% endblock %}

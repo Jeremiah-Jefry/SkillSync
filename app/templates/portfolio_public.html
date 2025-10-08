@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Profile Header Section -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="p-6 sm:p-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="{{ url_for('static', filename=user.profile_picture) }}" 
+                         alt="{{ user.first_name }}'s profile" 
+                         class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md">
+                    <div class="ml-4">
+                        <h1 class="text-2xl font-bold text-gray-900">{{ user.first_name }} {{ user.last_name }}</h1>
+                        {% if user.bio %}
+                        <p class="text-gray-600 mt-1">{{ user.bio }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3">
+                    {% if user == current_user %}
+                    <a href="{{ url_for('portfolio.print_portfolio', username=user.username) }}" 
+                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
+                       target="_blank">
+                        <i class="fas fa-print mr-2"></i>
+                        Print Portfolio
+                    </a>
+                    {% endif %}
+
+                    <div class="flex gap-2">
+                        {% if user.github_username %}
+                        <a href="https://github.com/{{ user.github_username }}" 
+                           target="_blank" 
+                           class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition duration-200">
+                            <i class="fab fa-github mr-2"></i>
+                            GitHub
+                        </a>
+                        {% endif %}
+                        
+                        {% if user.linkedin_url %}
+                        <a href="{{ user.linkedin_url }}" 
+                           target="_blank" 
+                           class="inline-flex items-center px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition duration-200">
+                            <i class="fab fa-linkedin mr-2"></i>
+                            LinkedIn
+                        </a>
+                        {% endif %}
+                        
+                        {% if user.portfolio_url %}
+                        <a href="{{ user.portfolio_url }}" 
+                           target="_blank" 
+                           class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200">
+                            <i class="fas fa-globe mr-2"></i>
+                            Portfolio
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+        <!-- Skills Section -->
+        <div class="col-md-8">
+            <h3 class="mb-3">Skills</h3>
+            <div class="row">
+                {% for skill in skills %}
+                <div class="col-md-6 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ skill.name }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">{{ skill.category }}</small>
+                            </p>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: {{ skill.level * 10 }}%"
+                                     aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="10">
+                                    {{ skill.level }}/10
+                                </div>
+                            </div>
+                            {% if skill.description %}
+                            <p class="card-text mt-2">
+                                <small>{{ skill.description }}</small>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Projects Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3 class="mb-3">Projects</h3>
+            <div class="row">
+                {% for project in projects %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        {% if project.image_url %}
+                        <img src="{{ project.image_url }}" class="card-img-top" alt="{{ project.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <p class="card-text">{{ project.description }}</p>
+                            <div class="mb-2">
+                                <small class="text-muted">Tech Stack:</small>
+                                {% for tech in project.get_tech_stack_list() %}
+                                <span class="badge bg-secondary me-1">{{ tech }}</span>
+                                {% endfor %}
+                            </div>
+                            <p class="mb-1">
+                                <small class="text-muted">Status: </small>
+                                <span class="badge {% if project.status == 'completed' %}bg-success{% elif project.status == 'in-progress' %}bg-warning{% else %}bg-info{% endif %}">
+                                    {{ project.status }}
+                                </span>
+                            </p>
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" class="btn btn-outline-dark btn-sm me-2" target="_blank">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                            {% endif %}
+                            {% if project.demo_url %}
+                            <a href="{{ project.demo_url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

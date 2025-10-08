@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ user.first_name }} {{ user.last_name }} - Portfolio</title>
+    <style>
+        @page {
+            size: letter portrait;
+            margin: 2cm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            color: #2563eb;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #1e40af;
+            font-size: 20px;
+            margin-top: 20px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 5px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-info {
+            margin-bottom: 30px;
+        }
+        .skills-section {
+            margin-bottom: 30px;
+        }
+        .skill-item {
+            margin-bottom: 15px;
+        }
+        .skill-name {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .skill-category {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .skill-level {
+            width: 100%;
+            height: 10px;
+            background-color: #e5e7eb;
+            margin-top: 5px;
+        }
+        .skill-level-bar {
+            height: 100%;
+            background-color: #2563eb;
+        }
+        .projects-section {
+            margin-bottom: 30px;
+        }
+        .project-item {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .project-title {
+            font-weight: bold;
+            color: #1f2937;
+            font-size: 16px;
+        }
+        .project-tech {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .project-description {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .contact-info {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .tag {
+            background-color: #e5e7eb;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ user.first_name }} {{ user.last_name }}</h1>
+        {% if user.bio %}
+        <p>{{ user.bio }}</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-info">
+        <h2>Contact Information</h2>
+        <p>Email: {{ user.email }}</p>
+        {% if user.github_username %}
+        <p>GitHub: {{ user.github_username }}</p>
+        {% endif %}
+        {% if user.linkedin_url %}
+        <p>LinkedIn: {{ user.linkedin_url }}</p>
+        {% endif %}
+        {% if user.portfolio_url %}
+        <p>Portfolio: {{ user.portfolio_url }}</p>
+        {% endif %}
+    </div>
+
+    <div class="skills-section">
+        <h2>Skills</h2>
+        {% for skill in skills %}
+        <div class="skill-item">
+            <div class="skill-name">{{ skill.name }}</div>
+            <div class="skill-category">
+                {{ skill.category.replace('_', ' ').title() }}
+                {% if skill.subcategory %}
+                 • {{ skill.subcategory.replace('_', ' ').title() }}
+                {% endif %}
+            </div>
+            {% if skill.tags %}
+            <div class="tags">
+                {% for tag in skill.get_tags_list() %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="skill-level">
+                <div class="skill-level-bar" style="width: {{ skill.level * 10 }}%"></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="projects-section">
+        <h2>Projects</h2>
+        {% for project in projects %}
+        <div class="project-item">
+            <div class="project-title">{{ project.title }}</div>
+            <div class="project-tech">
+                Technologies: {{ ', '.join(project.get_tech_stack_list()) }}
+            </div>
+            <div class="project-description">{{ project.description }}</div>
+            {% if project.github_url or project.demo_url %}
+            <div class="project-links">
+                {% if project.github_url %}
+                GitHub: {{ project.github_url }}<br>
+                {% endif %}
+                {% if project.demo_url %}
+                Demo: {{ project.demo_url }}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="footer">
+        <p>Generated on {{ now.strftime('%B %d, %Y') }}</p>
+    </div>
+</body>
+</html>

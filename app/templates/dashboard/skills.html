@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Skills - SkillSync{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-poppins font-bold text-gray-900">Skills</h1>
+            <p class="text-gray-600 mt-1">Manage and track your skills</p>
+        </div>
+        <a href="{{ url_for('dashboard.add_skill') }}" 
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+            <i class="fas fa-plus mr-2"></i>Add New Skill
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="relative w-full max-w-md mb-6">
+        <input type="text" 
+               id="skills-search" 
+               placeholder="Search skills..." 
+               class="w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+        <span class="absolute left-3 top-2.5 text-gray-400">
+            <i class="fas fa-search"></i>
+        </span>
+    </div>
+
+    <!-- Skills Grid -->
+    {% if skills.items %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for skill in skills.items %}
+                <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition duration-200">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-900 text-lg">{{ skill.name }}</h3>
+                            <div class="space-y-1">
+                                <p class="text-sm text-gray-600">
+                                    <span class="font-medium">Category:</span> 
+                                    {{ skill.category.replace('_', ' ').title() }}
+                                </p>
+                                {% if skill.subcategory %}
+                                <p class="text-sm text-gray-600">
+                                    <span class="font-medium">Subcategory:</span>
+                                    {{ skill.subcategory.replace('_', ' ').title() }}
+                                </p>
+                                {% endif %}
+                                {% if skill.tags %}
+                                <div class="flex flex-wrap gap-1 mt-2">
+                                    {% for tag in skill.get_tags_list() %}
+                                    <span class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">{{ tag }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-gray-400 hover:text-blue-600">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-gray-400 hover:text-red-600">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Skill Level Bar -->
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-gray-700">Skill Level</span>
+                            <span class="text-sm font-semibold text-gray-900">{{ skill.level }}/10</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-300" 
+                                 style="width: {{ skill.level * 10 }}%"></div>
+                        </div>
+                    </div>
+
+                    {% if skill.description %}
+                        <p class="text-sm text-gray-600">{{ skill.description[:100] }}{% if skill.description|length > 100 %}...{% endif %}</p>
+                    {% endif %}
+
+                    <div class="mt-4 text-xs text-gray-500">
+                        Added {{ skill.created_at.strftime('%B %d, %Y') }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if skills.pages > 1 %}
+            <div class="flex justify-center mt-8">
+                <nav class="flex space-x-2">
+                    {% if skills.has_prev %}
+                        <a href="{{ url_for('dashboard.skills', page=skills.prev_num) }}" 
+                           class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                            Previous
+                        </a>
+                    {% endif %}
+                    
+                    {% for page_num in skills.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != skills.page %}
+                                <a href="{{ url_for('dashboard.skills', page=page_num) }}" 
+                                   class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                                    {{ page_num }}
+                                </a>
+                            {% else %}
+                                <span class="px-3 py-2 bg-blue-600 border border-blue-600 text-white rounded-md">
+                                    {{ page_num }}
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if skills.has_next %}
+                        <a href="{{ url_for('dashboard.skills', page=skills.next_num) }}" 
+                           class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50">
+                            Next
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="bg-white rounded-lg shadow-sm p-12 text-center">
+            <i class="fas fa-brain text-gray-300 text-6xl mb-6"></i>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No skills added yet</h3>
+            <p class="text-gray-600 mb-6">Start by adding your first skill to track your progress</p>
+            <a href="{{ url_for('dashboard.add_skill') }}" 
+               class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+                <i class="fas fa-plus mr-2"></i>Add Your First Skill
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

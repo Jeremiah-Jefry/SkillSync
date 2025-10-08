@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center">
+            <h1 class="text-5xl font-poppins font-bold text-gray-900 mb-6">
+                Build Your <span class="text-blue-600">Dynamic Portfolio</span>
+                <br>Track Your <span class="text-purple-600">Skills</span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                SkillSync is an AI-powered platform that helps you showcase your skills, manage projects, 
+                and create a living digital profile that evolves with your growth.
+            </p>
+            
+            <div class="flex justify-center space-x-4">
+                <a href="{{ url_for('auth.register') }}" 
+                   class="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition duration-200 shadow-lg">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Get Started Free
+                </a>
+                <a href="#features" 
+                   class="bg-white text-gray-700 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition duration-200 shadow-lg border border-gray-200">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-poppins font-bold text-gray-900 mb-4">
+                    Everything You Need to Showcase Your Skills
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    From skill tracking to project management, SkillSync provides all the tools you need.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition duration-200">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-brain text-blue-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-poppins font-semibold text-gray-900 mb-4">Skill Management</h3>
+                    <p class="text-gray-600">Track and visualize your skills with our 0-10 level system. Organize by categories and see your progress over time.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition duration-200">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-project-diagram text-purple-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-poppins font-semibold text-gray-900 mb-4">Project Showcase</h3>
+                    <p class="text-gray-600">Display your real projects with GitHub integration, tech stacks, and live demo links.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition duration-200">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-poppins font-semibold text-gray-900 mb-4">Analytics Dashboard</h3>
+                    <p class="text-gray-600">Track learning progress, streaks, and growth with detailed charts and insights.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition duration-200">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-globe text-yellow-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-poppins font-semibold text-gray-900 mb-4">Dynamic Portfolio</h3>
+                    <p class="text-gray-600">Auto-generated public portfolio with a unique shareable link that updates as you grow.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition duration-200">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-robot text-red-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-poppins font-semibold text-gray-900 mb-4">AI Features</h3>
+                    <p class="text-gray-600">Coming soon: AI-powered resume generation and skill recommendations.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition duration-200">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-poppins font-semibold text-gray-900 mb-4">Secure & Private</h3>
+                    <p class="text-gray-600">Your data is secure with us. Control what's public and what stays private.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="py-20 bg-blue-600">
+        <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-poppins font-bold text-white mb-6">
+                Ready to Build Your Dynamic Portfolio?
+            </h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Join thousands of developers, students, and professionals already using SkillSync.
+            </p>
+            <a href="{{ url_for('auth.register') }}" 
+               class="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-100 transition duration-200 shadow-lg">
+                <i class="fas fa-rocket mr-2"></i>
+                Start Building Today
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

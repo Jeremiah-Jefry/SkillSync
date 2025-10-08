@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Your Projects</h1>
+            <p class="text-gray-600 mt-1">Showcase your work and achievements</p>
+        </div>
+        <a href="{{ url_for('dashboard.add_project') }}" 
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+            <i class="fas fa-plus mr-2"></i>Add New Project
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="relative w-full max-w-md mb-6">
+        <input type="text" 
+               id="projects-search" 
+               placeholder="Search projects..." 
+               class="w-full px-4 py-2 pl-10 pr-8 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+        <span class="absolute left-3 top-2.5 text-gray-400">
+            <i class="fas fa-search"></i>
+        </span>
+    </div>
+    
+    <!-- Sort and Filter Controls -->
+    <div class="flex flex-wrap gap-4 mb-6">
+        <select id="sort-projects" 
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="name-asc">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+        </select>
+        
+        <input type="text" 
+               id="filter-tech" 
+               placeholder="Filter by technology..."
+               class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+    </div>
+    
+    <!-- Projects Grid -->
+    <div class="projects-grid grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for project in projects.items %}
+        <div class="project-item bg-white rounded-lg shadow-sm hover:shadow-md transition duration-200 overflow-hidden"
+             data-title="{{ project.title }}"
+             data-date="{{ project.created_at.isoformat() }}"
+             data-tech-stack="{{ ','.join(project.get_tech_stack_list()) }}">
+            {% if project.image_url %}
+            <img src="{{ project.image_url }}" 
+                 class="w-full h-48 object-cover" 
+                 alt="{{ project.title }}">
+            {% endif %}
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">{{ project.title }}</h3>
+                    <span class="px-3 py-1 text-sm rounded-full {% if project.status == 'completed' %}bg-green-100 text-green-800{% elif project.status == 'in-progress' %}bg-yellow-100 text-yellow-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                        {{ project.status }}
+                    </span>
+                </div>
+                
+                <p class="text-gray-600 mb-4">{{ project.description }}</p>
+                
+                <!-- Tech Stack -->
+                <div class="mb-4">
+                    <p class="text-sm text-gray-500 mb-2">Tech Stack:</p>
+                    <div class="flex flex-wrap gap-2">
+                        {% for tech in project.get_tech_stack_list() %}
+                        <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-sm">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Project Links -->
+                <div class="flex space-x-3">
+                    {% if project.github_url %}
+                    <a href="{{ project.github_url }}" 
+                       class="flex items-center px-3 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition duration-200" 
+                       target="_blank">
+                        <i class="fab fa-github mr-2"></i>
+                        GitHub
+                    </a>
+                    {% endif %}
+                    {% if project.demo_url %}
+                    <a href="{{ project.demo_url }}" 
+                       class="flex items-center px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200" 
+                       target="_blank">
+                        <i class="fas fa-external-link-alt mr-2"></i>
+                        Live Demo
+                    </a>
+                    {% endif %}
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <p class="text-sm text-gray-500">
+                        <i class="far fa-calendar-alt mr-2"></i>
+                        Added {{ project.created_at.strftime('%B %d, %Y') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if projects.pages > 1 %}
+    <nav aria-label="Project navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if projects.has_prev %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('dashboard.projects', page=projects.prev_num) }}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for page_num in projects.iter_pages() %}
+                {% if page_num %}
+                    <li class="page-item {% if page_num == projects.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('dashboard.projects', page=page_num) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if projects.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('dashboard.projects', page=projects.next_num) }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

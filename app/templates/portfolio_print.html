@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.first_name }} {{ user.last_name }} - Printable Portfolio{% endblock %}
+
+{% block head %}
+<style>
+    @media print {
+        /* Hide navigation and unnecessary elements */
+        nav, .no-print {
+            display: none !important;
+        }
+        
+        /* Ensure the content takes full width */
+        .print-container {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 2cm !important;
+        }
+        
+        /* Page breaks */
+        .page-break {
+            page-break-before: always;
+        }
+        
+        /* Ensure text is black for better printing */
+        body {
+            color: #000;
+            background: #fff;
+        }
+        
+        /* Adjust font sizes for print */
+        h1 { font-size: 24pt !important; }
+        h2 { font-size: 18pt !important; }
+        h3 { font-size: 14pt !important; }
+        p, li { font-size: 11pt !important; }
+        
+        /* Ensure links are visible */
+        a {
+            text-decoration: underline;
+            color: #000 !important;
+        }
+        
+        /* Show URLs for links */
+        a[href]:after {
+            content: " (" attr(href) ")";
+            font-size: 10pt;
+            font-style: italic;
+        }
+        
+        /* Don't show URL for internal links */
+        a[href^="/"]:after,
+        a[href^="#"]:after {
+            content: "";
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="print-container max-w-5xl mx-auto p-8">
+    <!-- Print Controls - Only visible on screen -->
+    <div class="no-print mb-8 flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+        <div>
+            <h2 class="text-xl font-semibold text-gray-900">Printable Portfolio</h2>
+            <p class="text-sm text-gray-600">Use your browser's print function (Ctrl/Cmd + P) to save as PDF or print</p>
+        </div>
+        <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+            <i class="fas fa-print mr-2"></i>Print
+        </button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="mb-12 border-b pb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ user.first_name }} {{ user.last_name }}</h1>
+        {% if user.bio %}
+        <p class="text-lg text-gray-600">{{ user.bio }}</p>
+        {% endif %}
+        
+        <!-- Contact Information -->
+        <div class="mt-6 space-y-2 text-gray-600">
+            <p><i class="fas fa-envelope mr-2"></i>{{ user.email }}</p>
+            {% if user.github_username %}
+            <p><i class="fab fa-github mr-2"></i>github.com/{{ user.github_username }}</p>
+            {% endif %}
+            {% if user.linkedin_url %}
+            <p><i class="fab fa-linkedin mr-2"></i>{{ user.linkedin_url }}</p>
+            {% endif %}
+            {% if user.portfolio_url %}
+            <p><i class="fas fa-globe mr-2"></i>{{ user.portfolio_url }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Skills & Expertise</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for skill in skills %}
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="font-semibold text-gray-900">{{ skill.name }}</h3>
+                        <p class="text-sm text-gray-600">
+                            {{ skill.category.replace('_', ' ').title() }}
+                            {% if skill.subcategory %}
+                            • {{ skill.subcategory.replace('_', ' ').title() }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">Level: {{ skill.level }}/10</span>
+                </div>
+                {% if skill.description %}
+                <p class="text-sm text-gray-600 mt-2">{{ skill.description }}</p>
+                {% endif %}
+                {% if skill.tags %}
+                <div class="mt-2">
+                    {% for tag in skill.get_tags_list() %}
+                    <span class="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full mr-2">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Projects Section -->
+    <div class="page-break">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Projects</h2>
+        <div class="space-y-8">
+            {% for project in projects %}
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ project.title }}</h3>
+                <p class="text-gray-600 mb-4">{{ project.description }}</p>
+                
+                <div class="space-y-3">
+                    {% if project.get_tech_stack_list() %}
+                    <p class="text-sm">
+                        <span class="font-medium">Technologies:</span>
+                        {{ ', '.join(project.get_tech_stack_list()) }}
+                    </p>
+                    {% endif %}
+                    
+                    {% if project.github_url or project.demo_url %}
+                    <div class="text-sm space-y-1">
+                        {% if project.github_url %}
+                        <p><span class="font-medium">GitHub:</span> {{ project.github_url }}</p>
+                        {% endif %}
+                        {% if project.demo_url %}
+                        <p><span class="font-medium">Demo:</span> {{ project.demo_url }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-12 pt-8 border-t text-center text-sm text-gray-500">
+        <p>Generated on {{ now.strftime('%B %d, %Y') }} • SkillSync Portfolio</p>
+    </div>
+</div>
+{% endblock %}

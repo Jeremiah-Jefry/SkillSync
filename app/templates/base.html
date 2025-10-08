@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SkillSync - AI-Powered Portfolio & Skill Tracker{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/search.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/skills.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/projects.js') }}" defer></script>
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-50 font-inter">
+    {% block navbar %}
+    {% if current_user.is_authenticated %}
+    <!-- Dashboard Navbar -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('dashboard.dashboard') }}" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-sync-alt text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-poppins font-semibold text-gray-900">SkillSync</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="{{ url_for('main.portfolio', username=current_user.username) }}" 
+                       class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium">
+                        <i class="fas fa-eye mr-1"></i> View Portfolio
+                    </a>
+                    <div class="relative group">
+                        <button class="flex items-center text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-user-circle mr-2"></i>
+                            {{ current_user.first_name }}
+                            <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <a href="{{ url_for('dashboard.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-user mr-2"></i> Profile
+                            </a>
+                            <a href="{{ url_for('auth.logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% else %}
+    <!-- Public Navbar -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('main.index') }}" class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-sync-alt text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-poppins font-semibold text-gray-900">SkillSync</span>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="{{ url_for('auth.login') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+                        Sign In
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+    {% endblock %}
+
+    {% block sidebar %}
+    {% if current_user.is_authenticated %}
+    <!-- Dashboard Sidebar -->
+    <div class="flex">
+        <div class="w-64 bg-white shadow-sm h-screen fixed left-0 top-16 overflow-y-auto">
+            <nav class="mt-8 px-4">
+                <div class="space-y-2">
+                    <a href="{{ url_for('dashboard.dashboard') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 {{ 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' if request.endpoint == 'dashboard.dashboard' }}">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                    
+                    <a href="{{ url_for('dashboard.skills') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 {{ 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' if request.endpoint in ['dashboard.skills', 'dashboard.add_skill'] }}">
+                        <i class="fas fa-brain mr-3"></i>
+                        <span class="font-medium">Skills</span>
+                    </a>
+                    
+                    <a href="{{ url_for('dashboard.projects') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 {{ 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' if request.endpoint in ['dashboard.projects', 'dashboard.add_project'] }}">
+                        <i class="fas fa-project-diagram mr-3"></i>
+                        <span class="font-medium">Projects</span>
+                    </a>
+                    
+                    <a href="{{ url_for('dashboard.profile') }}" 
+                       class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors duration-200 {{ 'bg-blue-50 text-blue-700 border-r-2 border-blue-600' if request.endpoint == 'dashboard.profile' }}">
+                        <i class="fas fa-user mr-3"></i>
+                        <span class="font-medium">Profile</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Main content area -->
+        <div class="flex-1 ml-64 mt-16 p-8">
+    {% else %}
+    <div class="mt-16">
+    {% endif %}
+    {% endblock %}
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="mb-6">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else category }} bg-{{ 'red' if category in ['error', 'danger'] else 'green' if category == 'success' else 'blue' }}-100 border border-{{ 'red' if category in ['error', 'danger'] else 'green' if category == 'success' else 'blue' }}-400 text-{{ 'red' if category in ['error', 'danger'] else 'green' if category == 'success' else 'blue' }}-700 px-4 py-3 rounded mb-4">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Main Content -->
+            {% block content %}{% endblock %}
+
+    {% block sidebar_end %}
+    {% if current_user.is_authenticated %}
+        </div>
+    </div>
+    {% else %}
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

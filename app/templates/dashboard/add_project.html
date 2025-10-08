@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Add Project{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Add New Project</h1>
+    
+    <form method="POST" class="needs-validation" novalidate>
+        {{ form.csrf_token }}
+        
+        <div class="mb-3">
+            {{ form.title.label(class="form-label") }}
+            {{ form.title(class="form-control") }}
+            {% if form.title.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.title.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=4) }}
+            {% if form.description.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.description.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.tech_stack.label(class="form-label") }}
+            {{ form.tech_stack(class="form-control") }}
+            <div class="form-text">Comma-separated list of technologies used (e.g., Python, React, PostgreSQL)</div>
+            {% if form.tech_stack.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.tech_stack.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.github_url.label(class="form-label") }}
+            {{ form.github_url(class="form-control") }}
+            {% if form.github_url.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.github_url.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.demo_url.label(class="form-label") }}
+            {{ form.demo_url(class="form-control") }}
+            {% if form.demo_url.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.demo_url.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.image_url.label(class="form-label") }}
+            {{ form.image_url(class="form-control") }}
+            {% if form.image_url.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.image_url.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            {{ form.status.label(class="form-label") }}
+            {{ form.status(class="form-select") }}
+            {% if form.status.errors %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.status.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Add Project</button>
+        <a href="{{ url_for('dashboard.projects') }}" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
