@@ -4,7 +4,7 @@ SkillSync is a **full-stack Flask web application** designed to empower students
 
 ---
 
-## 🚀 Overview
+##  Overview
 
 **SkillSync** bridges the gap between learning and showcasing. It automatically syncs your skills, projects, and progress, creating a living digital profile that evolves as you grow.
 
@@ -12,20 +12,20 @@ SkillSync is a **full-stack Flask web application** designed to empower students
 
 ---
 
-## ✨ Features
+##  Features
 
 | Category                             | Description                                                  |
 | ------------------------------------ | ------------------------------------------------------------ |
-| 🔐 **Authentication**                | Secure registration & login using Flask-Login                |
-| 🧠 **Skill Management**              | Add, edit, and visualize skills (0–10 level system)          |
-| 💼 **Project Showcase**              | Display your real projects with GitHub integration           |
-| 📊 **Analytics Dashboard**           | Track learning progress, streaks & growth charts             |
-| 🌐 **Dynamic Portfolio**             | Auto-generated public portfolio with a unique shareable link |
-| 🤖 **AI Resume Generator (Planned)** | Generate resumes dynamically using templates or APIs         |
+|  **Authentication**                | Secure registration & login using Flask-Login                |
+|  **Skill Management**              | Add, edit, and visualize skills (0–10 level system)          |
+|  **Project Showcase**              | Display your real projects with GitHub integration           |
+|  **Analytics Dashboard**           | Track learning progress, streaks & growth charts             |
+|  **Dynamic Portfolio**             | Auto-generated public portfolio with a unique shareable link |
+|  **AI Resume Generator (Planned)** | Generate resumes dynamically using templates or APIs         |
 
 ---
 
-## 🧱 Folder Structure
+##  Folder Structure
 
 ```
 SkillSync/
@@ -59,7 +59,7 @@ SkillSync/
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 **Backend:** Flask, SQLAlchemy, Flask-WTF, Flask-Login
 **Frontend:** HTML, CSS (Tailwind/Custom), JavaScript (Chart.js, Axios)
@@ -68,7 +68,7 @@ SkillSync/
 
 ---
 
-## 🎨 UI / UX Design
+##  UI / UX Design
 
 **Theme:** Modern | Clean | Professional Dashboard
 
@@ -91,7 +91,7 @@ SkillSync/
 
 ---
 
-## 🧰 Setup Instructions
+##  Setup Instructions
 
 ### 1️⃣ Clone the Repo
 
@@ -123,7 +123,7 @@ Then open: **[http://127.0.0.1:5000](http://127.0.0.1:5000)**
 
 ---
 
-## 🧠 Architecture Overview
+##  Architecture Overview
 
 **Frontend Layer:** Flask templates (Jinja2) + dynamic JS for charts and API rendering.
 **Backend Layer:** Modular Flask Blueprints + ORM models + secure session management.
@@ -133,23 +133,23 @@ Then open: **[http://127.0.0.1:5000](http://127.0.0.1:5000)**
 
 
 
-## 💡 Future Enhancements
+##  Future Enhancements
 
-* 🤖 AI Resume Generator (OpenAI API)
-* 📈 Skill Insights with ML-based recommendations
-* 🧑‍🤝‍🧑 Learning Circles & Peer Collaboration
-* 📱 PWA for mobile tracking
-* 🧩 Chrome Extension for quick updates
+*  AI Resume Generator (OpenAI API)
+*  Skill Insights with ML-based recommendations
+*  Learning Circles & Peer Collaboration
+*  PWA for mobile tracking
+*  Chrome Extension for quick updates
 
 ---
 
-## 🧑‍💻 Contributor
+##  Contributor
 
 * **Jeremiah Jefry** — Creator, Developer & Visionary behind SkillSync
 
 ---
 
-## 📜 License
+##  License
 
 This project is open-sourced under the **MIT License**.
 
